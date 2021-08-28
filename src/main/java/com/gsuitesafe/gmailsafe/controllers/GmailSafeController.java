@@ -13,12 +13,15 @@ import java.util.List;
 @RequestMapping
 public class GmailSafeController {
 
+    // TODO: this should be retrieve from an oAuth session
+    private final static String USER_ID = "xyz@gmail.com";
+
     @Autowired
     private GmailSafeService service;
 
     @PostMapping("/v0.1/backups")
     public ResponseEntity<BackupId> initBackup() {
-        return ResponseEntity.ok(service.initBackup());
+        return ResponseEntity.ok(service.initBackup(USER_ID));
     }
 
     @GetMapping("/v0.1/backups")
@@ -27,14 +30,14 @@ public class GmailSafeController {
     }
 
     @GetMapping("/v0.1/exports/{backupId}")
-    public ResponseEntity getBackup(@PathVariable("backupId") String backupId) {
-        return ResponseEntity.ok(service.getBackup(backupId));
+    public ResponseEntity exportBackup(@PathVariable("backupId") String backupId) {
+        return ResponseEntity.ok(service.exportBackup(backupId, USER_ID));
     }
 
     @GetMapping("/v0.2/exports/{backupId}/{label}")
-    public ResponseEntity getBackup(@PathVariable("backupId") String backupId,
-                                    @PathVariable("label") String label) {
-        return ResponseEntity.ok(service.getBackup(backupId, label));
+    public ResponseEntity exportBackup(@PathVariable("backupId") String backupId,
+                                       @PathVariable("label") String label) {
+        return ResponseEntity.ok(service.exportBackup(backupId, USER_ID, label));
     }
 
 }

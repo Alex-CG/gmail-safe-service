@@ -1,4 +1,4 @@
-package com.gsuitesafe.gmailsafe.services.gmail;
+package com.gsuitesafe.gmailsafe.services.gmail.integration;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -39,6 +39,8 @@ public class GmailIntegrationService {
     private static final List<String> SCOPES = Collections.singletonList(GmailScopes.GMAIL_LABELS);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
+    // TODO: This @PostConstruct should be enabled later in order to set up the integration with the Gmail API
+    // @PostConstruct
     public  void initialize() throws IOException, GeneralSecurityException {
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -83,6 +85,5 @@ public class GmailIntegrationService {
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
-
 
 }

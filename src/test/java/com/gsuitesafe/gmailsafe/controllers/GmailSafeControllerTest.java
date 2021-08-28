@@ -34,6 +34,8 @@ public class GmailSafeControllerTest {
     @MockBean
     private GmailSafeService service;
 
+    private final static String USER_ID = "xyz@gmail.com";
+
     @Test
     public void notFound() throws Exception {
         mockMvc.perform(get("/v0.1/not-found"))
@@ -45,7 +47,7 @@ public class GmailSafeControllerTest {
         final String backupId = "3fcb7e7b-9932-429f-9266-1ed609bfcce8";
         final BackupId expectedResponse = new BackupId(backupId);
 
-        when(service.initBackup()).thenReturn(new BackupId(backupId));
+        when(service.initBackup(USER_ID)).thenReturn(new BackupId(backupId));
 
         final MvcResult result = mockMvc.perform(post("/v0.1/backups"))
                 .andExpect(status().isOk())

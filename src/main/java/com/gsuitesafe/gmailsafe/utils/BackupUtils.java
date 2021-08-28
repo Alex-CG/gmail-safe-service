@@ -3,6 +3,8 @@ package com.gsuitesafe.gmailsafe.utils;
 import com.gsuitesafe.gmailsafe.models.BackupStatus;
 import lombok.experimental.UtilityClass;
 
+import java.util.Random;
+
 @UtilityClass
 public class BackupUtils {
 
@@ -15,6 +17,13 @@ public class BackupUtils {
             default:
                 return BackupStatus.FAILED;
         }
+    }
+
+    public static Integer getRandomDuration() {
+        Random r = new Random();
+        int low = 10;
+        int high = 60;
+        return r.nextInt(high - low) + low;
     }
 
 }

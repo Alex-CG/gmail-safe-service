@@ -1,2 +1,7 @@
 server:
   port: 8090
+
+gmail:
+  api:
+    url: 'https://gmail.googleapis.com/gmail'
+    defaultMaxResults: 50

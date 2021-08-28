@@ -19,8 +19,8 @@ public class GmailSafeService {
     @Autowired
     private GmailBackupService gmailBackupService;
 
-    public BackupId initBackup() {
-        final Backup backup = gmailBackupService.create();
+    public BackupId initBackup(final String userId) {
+        final Backup backup = gmailBackupService.create(userId);
         return new BackupId(backup.getId());
     }
 
@@ -32,11 +32,11 @@ public class GmailSafeService {
                 .collect(Collectors.toList());
     }
 
-    public Object getBackup(String backupId) {
-        return "";
+    public byte[] exportBackup(final String backupId, final String userId) {
+        return gmailBackupService.export(backupId, userId);
     }
 
-    public Object getBackup(String backupId, String label) {
-        return "";
+    public byte[] exportBackup(final String backupId, final String userId, String label) {
+        return gmailBackupService.export(backupId, userId, label);
     }
 }
