@@ -1,23 +1,35 @@
 package com.gsuitesafe.gmailsafe.services;
 
 import com.gsuitesafe.gmailsafe.models.BackupDetails;
-import com.gsuitesafe.gmailsafe.models.BackupStatus;
 import com.gsuitesafe.gmailsafe.models.BackupId;
+import com.gsuitesafe.gmailsafe.services.gmail.models.Backup;
+import com.gsuitesafe.gmailsafe.services.gmail.GmailBackupService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.ZonedDateTime;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.gsuitesafe.gmailsafe.utils.BackupUtils.getBackupStatus;
 
 @Service
 public class GmailSafeService {
 
-    public BackupId initBackups() {
-        return new BackupId("1");
+    @Autowired
+    private GmailBackupService gmailBackupService;
+
+    public BackupId initBackup() {
+        final Backup backup = gmailBackupService.create();
+        return new BackupId(backup.getId());
     }
 
     public List<BackupDetails> getAllBackups() {
-        return Collections.singletonList(new BackupDetails("1", ZonedDateTime.now(), BackupStatus.OK));
+        final Collection<Backup> backups = gmailBackupService.getAll();
+        return backups.stream()
+                .map(backup -> new BackupDetails(
+                        backup.getId(), backup.getDate(), getBackupStatus(backup.getStatus()).getDescription()))
+                .collect(Collectors.toList());
     }
 
     public Object getBackup(String backupId) {

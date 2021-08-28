@@ -11,5 +11,5 @@ public class BackupDetails {
 
     private String backupId;
     private ZonedDateTime date;
-    private BackupStatus status;
+    private String status;
 }

@@ -17,8 +17,8 @@ public class GmailSafeController {
     private GmailSafeService service;
 
     @PostMapping("/v0.1/backups")
-    public ResponseEntity<BackupId> initBackups() {
-        return ResponseEntity.ok(service.initBackups());
+    public ResponseEntity<BackupId> initBackup() {
+        return ResponseEntity.ok(service.initBackup());
     }
 
     @GetMapping("/v0.1/backups")
