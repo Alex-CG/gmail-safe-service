@@ -36,7 +36,7 @@ public class GmailSafeService {
         return gmailBackupService.export(backupId, userId);
     }
 
-    public byte[] exportBackup(final String backupId, final String userId, String label) {
+    public byte[] exportBackup(final String backupId, final String userId, final String label) {
         return gmailBackupService.export(backupId, userId, label);
     }
 }

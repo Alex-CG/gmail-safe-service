@@ -76,7 +76,7 @@ public class GmailBackupService {
     public byte[] export(final String backupId, final String userId) {
         final List<Message> messages = repository.getBackupData(backupId);
         if (messages == null) {
-            throw new BackupNotFoundException(String.format("Backup not found for id: %s", backupId));
+            throw new BackupNotFoundException(backupId);
         }
 
         return fileService.createZipFile(messages, userId);
@@ -85,7 +85,7 @@ public class GmailBackupService {
     public byte[] export(final String backupId, final String userId, final String label) {
         List<Message> messages = repository.getBackupData(backupId);
         if (messages == null) {
-            throw new BackupNotFoundException(String.format("Backup not found for id: %s", backupId));
+            throw new BackupNotFoundException(backupId);
         }
 
         return fileService.createZipFile(

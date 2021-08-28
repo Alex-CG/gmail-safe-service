@@ -13,7 +13,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BackupNotFoundException.class)
     public ResponseEntity<ErrorResponse> handle(final BackupNotFoundException ex) {
         log.error("Backup Not Found: ", ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
+        final String message = String.format("Backup not found for id: %s", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(message));
     }
 
 }
