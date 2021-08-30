@@ -1,8 +1,8 @@
 package com.gsuitesafe.gmailsafe.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gsuitesafe.gmailsafe.exceptionhandling.BackupNotFoundException;
-import com.gsuitesafe.gmailsafe.exceptionhandling.ErrorResponse;
+import com.gsuitesafe.gmailsafe.exceptionhandling.exceptions.BackupNotFoundByIdException;
+import com.gsuitesafe.gmailsafe.exceptionhandling.models.ErrorResponse;
 import com.gsuitesafe.gmailsafe.models.BackupDetails;
 import com.gsuitesafe.gmailsafe.models.BackupId;
 import com.gsuitesafe.gmailsafe.models.BackupStatus;
@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -81,29 +82,29 @@ public class GmailSafeControllerTest {
 
     @Test
     public void exportBackup_returnsNotFound() throws Exception {
-        final String unknownId = "XYZ-123-ID";
-        final BackupNotFoundException ex = new BackupNotFoundException(unknownId);
-        when(service.exportBackup(anyString(), anyString())).thenThrow(ex);
+        final String unknownBackupId = "XYZ-123-ID";
+        final BackupNotFoundByIdException ex = new BackupNotFoundByIdException(unknownBackupId);
+        doThrow(ex).when(service).exportBackup(anyString());
 
-        final MvcResult result = mockMvc.perform(get(String.format("/v0.1/exports/%s", unknownId)))
+        final MvcResult result = mockMvc.perform(get(String.format("/v0.1/exports/%s", unknownBackupId)))
                 .andExpect(status().isNotFound())
                 .andReturn();
         assertThat(result.getResponse().getContentAsString())
                 .isEqualTo(objectMapper.writeValueAsString(
-                        new ErrorResponse(String.format("Backup not found for id: %s", unknownId))));
+                        new ErrorResponse(String.format("Backup not found for id: %s", unknownBackupId))));
     }
 
     @Test
     public void exportBackupWithLabel_returnsNotFound() throws Exception {
-        final String unknownId = "XYZ-123-ID";
-        final BackupNotFoundException ex = new BackupNotFoundException(unknownId);
-        when(service.exportBackup(anyString(), anyString(), anyString())).thenThrow(ex);
+        final String unknownBackupId = "XYZ-123-ID";
+        final BackupNotFoundByIdException ex = new BackupNotFoundByIdException(unknownBackupId);
+        doThrow(ex).when(service).exportBackup(anyString(), anyString());
 
-        final MvcResult result = mockMvc.perform(get(String.format("/v0.2/exports/%s/label", unknownId)))
+        final MvcResult result = mockMvc.perform(get(String.format("/v0.2/exports/%s/label", unknownBackupId)))
                 .andExpect(status().isNotFound())
                 .andReturn();
         assertThat(result.getResponse().getContentAsString())
                 .isEqualTo(objectMapper.writeValueAsString(
-                        new ErrorResponse(String.format("Backup not found for id: %s", unknownId))));
+                        new ErrorResponse(String.format("Backup not found for id: %s", unknownBackupId))));
     }
 }

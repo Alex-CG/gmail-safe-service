@@ -32,11 +32,11 @@ public class GmailSafeService {
                 .collect(Collectors.toList());
     }
 
-    public byte[] exportBackup(final String backupId, final String userId) {
-        return gmailBackupService.export(backupId, userId);
+    public byte[] exportBackup(final String backupId) {
+        return gmailBackupService.export(backupId);
     }
 
-    public byte[] exportBackup(final String backupId, final String userId, final String label) {
-        return gmailBackupService.export(backupId, userId, label);
+    public byte[] exportBackup(final String backupId, final String label) {
+        return gmailBackupService.export(backupId, label);
     }
 }

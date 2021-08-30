@@ -1,4 +1,4 @@
-package com.gsuitesafe.gmailsafe.services.gmail.integration;
+package com.gsuitesafe.gmailsafe.services.gmail.configs;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -14,7 +14,8 @@ import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Label;
 import com.google.api.services.gmail.model.ListLabelsResponse;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.FileNotFoundException;
@@ -22,11 +23,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
-@Service
-public class GmailIntegrationService {
+@Component
+public class GmailAPISetup {
+
+    @Autowired
+    private boolean isGmailAPiEnabled;
 
     private static final String APPLICATION_NAME = "Gmail API Java Quickstart";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
@@ -36,12 +40,21 @@ public class GmailIntegrationService {
      * Global instance of the scopes required by this quickstart.
      * If modifying these scopes, delete your previously saved tokens/ folder.
      */
-    private static final List<String> SCOPES = Collections.singletonList(GmailScopes.GMAIL_LABELS);
+    // private static final List<String> SCOPES = Collections.singletonList(GmailScopes.GMAIL_LABELS);
+    private static final List<String> SCOPES = Arrays.asList(
+            GmailScopes.MAIL_GOOGLE_COM,
+            GmailScopes.GMAIL_MODIFY,
+            GmailScopes.GMAIL_READONLY
+    );
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
-    // TODO: This @PostConstruct should be enabled later in order to set up the integration with the Gmail API
-    // @PostConstruct
-    public  void initialize() throws IOException, GeneralSecurityException {
+    @PostConstruct
+    public void initialize() throws IOException, GeneralSecurityException {
+        // Verifies if the Gmail API is enabled, if no then skip the configuration
+        if (!isGmailAPiEnabled) {
+            return;
+        }
+
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Gmail service = new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
@@ -70,7 +83,7 @@ public class GmailIntegrationService {
      */
     private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
-        InputStream in = GmailIntegrationService.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        InputStream in = GmailAPISetup.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (in == null) {
             throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
         }

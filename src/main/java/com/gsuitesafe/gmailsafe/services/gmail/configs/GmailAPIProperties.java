@@ -1,4 +1,4 @@
-package com.gsuitesafe.gmailsafe.services.gmail.models;
+package com.gsuitesafe.gmailsafe.services.gmail.configs;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,8 +16,7 @@ public class GmailAPIProperties {
     @NotEmpty
     private String url;
 
-    @Min(1)
-    @Max(1_000)
+    @Min(1) @Max(1_000)
     private Integer defaultMaxResults;
 
 }

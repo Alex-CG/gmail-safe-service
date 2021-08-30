@@ -1,16 +1,15 @@
 package com.gsuitesafe.gmailsafe.services.gmail;
 
-import com.google.api.services.gmail.model.Message;
-import com.gsuitesafe.gmailsafe.exceptionhandling.BackupNotFoundException;
+import com.gsuitesafe.gmailsafe.exceptionhandling.exceptions.BackupNotFoundByIdException;
 import com.gsuitesafe.gmailsafe.repositories.GmailBackupRepository;
 import com.gsuitesafe.gmailsafe.services.FileService;
 import com.gsuitesafe.gmailsafe.services.gmail.integration.GmailAPIService;
 import com.gsuitesafe.gmailsafe.services.gmail.models.Backup;
 import com.gsuitesafe.gmailsafe.services.gmail.models.GetAllMessagesResponse;
+import com.gsuitesafe.gmailsafe.services.gmail.models.Message;
 import com.gsuitesafe.gmailsafe.utils.BackupUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -32,7 +31,7 @@ public class GmailBackupService {
     private GmailBackupRepository repository;
 
     @Autowired
-    private Environment env;
+    private boolean isGmailAPiEnabled;
 
     private final int STATUS_IN_PROGRESS = 0;
     private final int STATUS_OK = 1;
@@ -49,7 +48,7 @@ public class GmailBackupService {
                 .build();
         repository.save(id, backup);
 
-        if (!isGmailAPiEnabled()) {
+        if (!isGmailAPiEnabled) {
             return backup;
         }
 
@@ -73,30 +72,25 @@ public class GmailBackupService {
         }).collect(Collectors.toList());
     }
 
-    public byte[] export(final String backupId, final String userId) {
+    public byte[] export(final String backupId) {
         final List<Message> messages = repository.getBackupData(backupId);
         if (messages == null) {
-            throw new BackupNotFoundException(backupId);
+            throw new BackupNotFoundByIdException(backupId);
         }
 
-        return fileService.createZipFile(messages, userId);
+        return fileService.createZipFile(messages);
     }
 
-    public byte[] export(final String backupId, final String userId, final String label) {
+    public byte[] export(final String backupId, final String label) {
         List<Message> messages = repository.getBackupData(backupId);
         if (messages == null) {
-            throw new BackupNotFoundException(backupId);
+            throw new BackupNotFoundByIdException(backupId);
         }
 
         return fileService.createZipFile(
                 messages.stream()
                         .filter(message -> message.getLabelIds().contains(label))
-                        .collect(Collectors.toList()),
-                userId);
-    }
-
-    private boolean isGmailAPiEnabled() {
-        return "true".equals(env.getProperty("enable-gmail-api"));
+                        .collect(Collectors.toList()));
     }
 
 }

@@ -29,15 +29,15 @@ public class GmailSafeController {
         return ResponseEntity.ok(service.getAllBackups());
     }
 
-    @GetMapping("/v0.1/exports/{backupId}")
-    public ResponseEntity exportBackup(@PathVariable("backupId") String backupId) {
-        return ResponseEntity.ok(service.exportBackup(backupId, USER_ID));
+    @GetMapping(path = "/v0.1/exports/{backupId}", produces = "application/zip")
+    public ResponseEntity<?> exportBackup(@PathVariable("backupId") String backupId) {
+        return ResponseEntity.ok(service.exportBackup(backupId));
     }
 
-    @GetMapping("/v0.2/exports/{backupId}/{label}")
-    public ResponseEntity exportBackup(@PathVariable("backupId") String backupId,
-                                       @PathVariable("label") String label) {
-        return ResponseEntity.ok(service.exportBackup(backupId, USER_ID, label));
+    @GetMapping(path = "/v0.2/exports/{backupId}/{label}", produces = "application/zip")
+    public ResponseEntity<?> exportBackup(@PathVariable("backupId") String backupId,
+                                          @PathVariable("label") String label) {
+        return ResponseEntity.ok(service.exportBackup(backupId, label));
     }
 
 }

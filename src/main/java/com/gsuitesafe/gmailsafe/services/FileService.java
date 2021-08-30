@@ -1,7 +1,6 @@
 package com.gsuitesafe.gmailsafe.services;
 
-import com.google.api.services.gmail.model.Message;
-import lombok.experimental.UtilityClass;
+import com.gsuitesafe.gmailsafe.services.gmail.models.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,7 @@ import java.util.zip.ZipOutputStream;
 @Service
 public class FileService {
 
-    public byte[] createZipFile(final List<Message> messages, final String userId) {
+    public byte[] createZipFile(final List<Message> messages) {
         final ByteArrayOutputStream bo = new ByteArrayOutputStream();
         final ZipOutputStream zipOut = new ZipOutputStream(bo);
 

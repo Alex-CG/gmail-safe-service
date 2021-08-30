@@ -1,4 +1,4 @@
-package com.gsuitesafe.gmailsafe.exceptionhandling;
+package com.gsuitesafe.gmailsafe.exceptionhandling.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
