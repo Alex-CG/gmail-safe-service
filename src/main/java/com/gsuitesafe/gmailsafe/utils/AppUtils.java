@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 import java.util.Random;
 
 @UtilityClass
-public class BackupUtils {
+public class AppUtils {
 
     public static BackupStatus getBackupStatus(final int status) {
         switch (status) {
@@ -21,8 +21,8 @@ public class BackupUtils {
 
     public static Integer getRandomDuration() {
         Random r = new Random();
-        int low = 10;
-        int high = 60;
+        int low = 10; // min duration that a backup can take
+        int high = 60; // max duration that a backup can take
         return r.nextInt(high - low) + low;
     }
 

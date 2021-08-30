@@ -1,7 +1,7 @@
 package com.gsuitesafe.gmailsafe.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gsuitesafe.gmailsafe.exceptionhandling.exceptions.BackupNotFoundByIdException;
+import com.gsuitesafe.gmailsafe.exceptionhandling.exceptions.BackupDataNotFoundByIdException;
 import com.gsuitesafe.gmailsafe.exceptionhandling.models.ErrorResponse;
 import com.gsuitesafe.gmailsafe.models.BackupDetails;
 import com.gsuitesafe.gmailsafe.models.BackupId;
@@ -83,7 +83,7 @@ public class GmailSafeControllerTest {
     @Test
     public void exportBackup_returnsNotFound() throws Exception {
         final String unknownBackupId = "XYZ-123-ID";
-        final BackupNotFoundByIdException ex = new BackupNotFoundByIdException(unknownBackupId);
+        final BackupDataNotFoundByIdException ex = new BackupDataNotFoundByIdException(unknownBackupId);
         when(service.exportBackup(unknownBackupId)).thenThrow(ex);
 
         final MvcResult result = mockMvc.perform(get(String.format("/v0.1/exports/%s", unknownBackupId)))
@@ -91,7 +91,7 @@ public class GmailSafeControllerTest {
                 .andReturn();
         assertThat(result.getResponse().getContentAsString())
                 .isEqualTo(objectMapper.writeValueAsString(
-                        new ErrorResponse(String.format("Backup not found for id: %s", unknownBackupId))));
+                        new ErrorResponse(String.format("Backup Data not found for id: %s", unknownBackupId))));
     }
 
     @Test
@@ -111,7 +111,7 @@ public class GmailSafeControllerTest {
     public void exportBackupWithLabel_returnsNotFound() throws Exception {
         final String unknownBackupId = "XYZ-123-ID";
         final String label = "XYZ-123-LABEL";
-        final BackupNotFoundByIdException ex = new BackupNotFoundByIdException(unknownBackupId);
+        final BackupDataNotFoundByIdException ex = new BackupDataNotFoundByIdException(unknownBackupId);
         when(service.exportBackup(unknownBackupId, label)).thenThrow(ex);
 
         final MvcResult result = mockMvc.perform(get(String.format("/v0.2/exports/%s/%s", unknownBackupId, label)))
@@ -119,7 +119,7 @@ public class GmailSafeControllerTest {
                 .andReturn();
         assertThat(result.getResponse().getContentAsString())
                 .isEqualTo(objectMapper.writeValueAsString(
-                        new ErrorResponse(String.format("Backup not found for id: %s", unknownBackupId))));
+                        new ErrorResponse(String.format("Backup Data not found for id: %s", unknownBackupId))));
     }
 
     @Test

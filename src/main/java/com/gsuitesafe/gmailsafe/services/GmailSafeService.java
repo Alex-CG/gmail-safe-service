@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.gsuitesafe.gmailsafe.utils.BackupUtils.getBackupStatus;
+import static com.gsuitesafe.gmailsafe.utils.AppUtils.getBackupStatus;
 
 @Service
 public class GmailSafeService {

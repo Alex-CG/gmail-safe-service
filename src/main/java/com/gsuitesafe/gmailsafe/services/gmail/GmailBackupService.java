@@ -6,7 +6,7 @@ import com.gsuitesafe.gmailsafe.services.gmail.integration.GmailAPIService;
 import com.gsuitesafe.gmailsafe.services.gmail.models.Backup;
 import com.gsuitesafe.gmailsafe.services.gmail.models.GetAllMessagesResponse;
 import com.gsuitesafe.gmailsafe.services.gmail.models.Message;
-import com.gsuitesafe.gmailsafe.utils.BackupUtils;
+import com.gsuitesafe.gmailsafe.utils.AppUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,7 @@ public class GmailBackupService {
                 .id(id)
                 .date(date)
                 .status(STATUS_IN_PROGRESS)
-                .dateToComplete(date.plus(BackupUtils.getRandomDuration(), ChronoUnit.SECONDS))
+                .dateToComplete(date.plus(AppUtils.getRandomDuration(), ChronoUnit.SECONDS))
                 .build();
         repository.save(id, backup);
 
@@ -53,7 +53,7 @@ public class GmailBackupService {
 
         final GetAllMessagesResponse allMessages = gmailAPIService.getAllMessages(userId);
 
-        // TODO: these calls should be made asynchronously
+        // TODO: these calls should be made asynchronously, maybe using CompletableFuture and enabling Async in the App
         final List<Message> messagesData = allMessages.getMessages().stream()
                 .map(message -> gmailAPIService.getMessage(userId, message.getId()))
                 .collect(Collectors.toList());

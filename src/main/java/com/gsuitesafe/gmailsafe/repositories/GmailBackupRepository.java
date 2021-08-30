@@ -1,6 +1,6 @@
 package com.gsuitesafe.gmailsafe.repositories;
 
-import com.gsuitesafe.gmailsafe.exceptionhandling.exceptions.BackupNotFoundByIdException;
+import com.gsuitesafe.gmailsafe.exceptionhandling.exceptions.BackupDataNotFoundByIdException;
 import com.gsuitesafe.gmailsafe.services.gmail.models.Backup;
 import com.gsuitesafe.gmailsafe.services.gmail.models.Message;
 import org.springframework.stereotype.Repository;
@@ -23,7 +23,7 @@ public class GmailBackupRepository {
     public List<Message> getBackupData(final String backupId) {
         final List<Message> messages = backupsData.get(backupId);
         if (messages == null) {
-            throw new BackupNotFoundByIdException(backupId);
+            throw new BackupDataNotFoundByIdException(backupId);
         }
         return messages;
     }

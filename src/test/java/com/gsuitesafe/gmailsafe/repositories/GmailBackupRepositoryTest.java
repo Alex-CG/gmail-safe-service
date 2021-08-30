@@ -1,6 +1,6 @@
 package com.gsuitesafe.gmailsafe.repositories;
 
-import com.gsuitesafe.gmailsafe.exceptionhandling.exceptions.BackupNotFoundByIdException;
+import com.gsuitesafe.gmailsafe.exceptionhandling.exceptions.BackupDataNotFoundByIdException;
 import com.gsuitesafe.gmailsafe.services.gmail.models.Backup;
 import com.gsuitesafe.gmailsafe.services.gmail.models.Message;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +10,6 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -37,7 +36,7 @@ public class GmailBackupRepositoryTest {
         final String unknownBackupId = "unknownBackupId";
 
         assertThatThrownBy(() -> repository.getBackupData(unknownBackupId))
-                .isInstanceOf(BackupNotFoundByIdException.class)
+                .isInstanceOf(BackupDataNotFoundByIdException.class)
                 .hasMessage(unknownBackupId);
     }
 

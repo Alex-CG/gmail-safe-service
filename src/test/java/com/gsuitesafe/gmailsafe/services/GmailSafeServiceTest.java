@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -84,5 +85,23 @@ public class GmailSafeServiceTest {
                 new BackupDetails(backup1Id, backup1Date, BackupStatus.IN_PROGRESS.getDescription()),
                 new BackupDetails(backup2Id, backup2Date, BackupStatus.IN_PROGRESS.getDescription())
             );
+    }
+
+    @Test
+    public void exportBackup_returnsBytes() {
+        final byte[] bytesFromEncodedString = "encodedString".getBytes();
+        when(mockGmailBackupService.export(anyString())).thenReturn(bytesFromEncodedString);
+
+        assertThat(gmailSafeService.exportBackup("backupId"))
+                .isEqualTo(bytesFromEncodedString);
+    }
+
+    @Test
+    public void exportBackupWithLabel_returnsBytes() {
+        final byte[] bytesFromEncodedString = "encodedString".getBytes();
+        when(mockGmailBackupService.export(anyString(), anyString())).thenReturn(bytesFromEncodedString);
+
+        assertThat(gmailSafeService.exportBackup("backupId", "label"))
+                .isEqualTo(bytesFromEncodedString);
     }
 }

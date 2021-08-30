@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
-import com.gsuitesafe.gmailsafe.exceptionhandling.exceptions.BackupNotFoundByIdException;
+import com.gsuitesafe.gmailsafe.exceptionhandling.exceptions.BackupDataNotFoundByIdException;
 import com.gsuitesafe.gmailsafe.exceptionhandling.models.ErrorResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,8 +56,8 @@ public class GmailSafeExceptionHandlerTest {
     @Test
     public void handleBackupNotFoundByIdException() {
         final String unknownBackupId = "unknownBackupId";
-        final BackupNotFoundByIdException ex = new BackupNotFoundByIdException(unknownBackupId);
-        final String message = String.format("Backup not found for id: %s", unknownBackupId);
+        final BackupDataNotFoundByIdException ex = new BackupDataNotFoundByIdException(unknownBackupId);
+        final String message = String.format("Backup Data not found for id: %s", unknownBackupId);
 
         assertResponse(exceptionHandler.handle(ex),
                 HttpStatus.NOT_FOUND, message,  message, Level.ERROR);

@@ -1,6 +1,6 @@
 package com.gsuitesafe.gmailsafe.exceptionhandling;
 
-import com.gsuitesafe.gmailsafe.exceptionhandling.exceptions.BackupNotFoundByIdException;
+import com.gsuitesafe.gmailsafe.exceptionhandling.exceptions.BackupDataNotFoundByIdException;
 import com.gsuitesafe.gmailsafe.exceptionhandling.models.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GmailSafeExceptionHandler {
 
-    @ExceptionHandler(BackupNotFoundByIdException.class)
-    public ResponseEntity<ErrorResponse> handle(final BackupNotFoundByIdException ex) {
-        final String message = String.format("Backup not found for id: %s", ex.getMessage());
+    @ExceptionHandler(BackupDataNotFoundByIdException.class)
+    public ResponseEntity<ErrorResponse> handle(final BackupDataNotFoundByIdException ex) {
+        final String message = String.format("Backup Data not found for id: %s", ex.getMessage());
         log.error(message, ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(message));
     }
