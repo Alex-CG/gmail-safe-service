@@ -32,7 +32,6 @@ public class GmailSafeServiceTest {
     private GmailSafeService gmailSafeService;
 
     private final int STATUS_IN_PROGRESS = 0;
-    private final static String USER_ID = "xyz@gmail.com";
 
     @Test
     public void initBackup_returnsBackupId() {
@@ -42,9 +41,9 @@ public class GmailSafeServiceTest {
                 .status(STATUS_IN_PROGRESS)
                 .dateToComplete(ZonedDateTime.now().plus(5L, ChronoUnit.SECONDS))
                 .build();
-        when(mockGmailBackupService.create(USER_ID)).thenReturn(backupResult);
+        when(mockGmailBackupService.create(anyString())).thenReturn(backupResult);
 
-        final BackupId backupId = gmailSafeService.initBackup(USER_ID);
+        final BackupId backupId = gmailSafeService.initBackup("USER_EMAIL");
 
         assertThat(backupId).isEqualTo(new BackupId("38fa943b-6545-442e-8aa4-bac8ac70a8f2"));
     }
