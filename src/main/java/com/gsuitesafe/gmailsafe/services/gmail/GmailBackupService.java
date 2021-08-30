@@ -1,6 +1,5 @@
 package com.gsuitesafe.gmailsafe.services.gmail;
 
-import com.gsuitesafe.gmailsafe.exceptionhandling.exceptions.BackupNotFoundByIdException;
 import com.gsuitesafe.gmailsafe.repositories.GmailBackupRepository;
 import com.gsuitesafe.gmailsafe.services.FileService;
 import com.gsuitesafe.gmailsafe.services.gmail.integration.GmailAPIService;
@@ -58,13 +57,13 @@ public class GmailBackupService {
         final List<Message> messagesData = allMessages.getMessages().stream()
                 .map(message -> gmailAPIService.getMessage(userId, message.getId()))
                 .collect(Collectors.toList());
-        repository.save(id, messagesData);
+        repository.saveData(id, messagesData);
 
         return backup;
     }
 
     public List<Backup> getAll() {
-        return repository.getBackup().stream().peek(backup -> {
+        return repository.getBackups().stream().peek(backup -> {
             if (backup.getStatus() == STATUS_IN_PROGRESS && ZonedDateTime.now().isAfter(backup.getDateToComplete())) {
                 final boolean result = new Random().nextBoolean();
                 backup.setStatus(result ? STATUS_OK : STATUS_FAILED);
@@ -74,19 +73,11 @@ public class GmailBackupService {
 
     public byte[] export(final String backupId) {
         final List<Message> messages = repository.getBackupData(backupId);
-        if (messages == null) {
-            throw new BackupNotFoundByIdException(backupId);
-        }
-
         return fileService.createZipFile(messages);
     }
 
     public byte[] export(final String backupId, final String label) {
-        List<Message> messages = repository.getBackupData(backupId);
-        if (messages == null) {
-            throw new BackupNotFoundByIdException(backupId);
-        }
-
+        final List<Message> messages = repository.getBackupData(backupId);
         return fileService.createZipFile(
                 messages.stream()
                         .filter(message -> message.getLabelIds().contains(label))

@@ -1,11 +1,13 @@
 package com.gsuitesafe.gmailsafe.services.gmail.models;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigInteger;
 import java.util.List;
 
 @Data
+@Builder
 public class Message {
 
     private BigInteger historyId;

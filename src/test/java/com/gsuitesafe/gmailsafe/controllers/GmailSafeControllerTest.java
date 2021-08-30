@@ -20,7 +20,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -84,7 +84,7 @@ public class GmailSafeControllerTest {
     public void exportBackup_returnsNotFound() throws Exception {
         final String unknownBackupId = "XYZ-123-ID";
         final BackupNotFoundByIdException ex = new BackupNotFoundByIdException(unknownBackupId);
-        doThrow(ex).when(service).exportBackup(anyString());
+        when(service.exportBackup(unknownBackupId)).thenThrow(ex);
 
         final MvcResult result = mockMvc.perform(get(String.format("/v0.1/exports/%s", unknownBackupId)))
                 .andExpect(status().isNotFound())
@@ -95,16 +95,44 @@ public class GmailSafeControllerTest {
     }
 
     @Test
+    public void exportBackup_returnsBytes() throws Exception {
+        final String backupId = "7799898c-a54a-4aac-a576-0a4b0df559d7";
+        final byte[] bytesFromEncodedString = "encodedString".getBytes();
+        when(service.exportBackup(anyString())).thenReturn(bytesFromEncodedString);
+
+        final MvcResult result = mockMvc.perform(get(String.format("/v0.1/exports/%s", backupId)))
+                .andExpect(status().isOk())
+                .andReturn();
+        assertThat(result.getResponse().getContentAsString())
+                .isEqualTo("encodedString");
+    }
+
+    @Test
     public void exportBackupWithLabel_returnsNotFound() throws Exception {
         final String unknownBackupId = "XYZ-123-ID";
+        final String label = "XYZ-123-LABEL";
         final BackupNotFoundByIdException ex = new BackupNotFoundByIdException(unknownBackupId);
-        doThrow(ex).when(service).exportBackup(anyString(), anyString());
+        when(service.exportBackup(unknownBackupId, label)).thenThrow(ex);
 
-        final MvcResult result = mockMvc.perform(get(String.format("/v0.2/exports/%s/label", unknownBackupId)))
+        final MvcResult result = mockMvc.perform(get(String.format("/v0.2/exports/%s/%s", unknownBackupId, label)))
                 .andExpect(status().isNotFound())
                 .andReturn();
         assertThat(result.getResponse().getContentAsString())
                 .isEqualTo(objectMapper.writeValueAsString(
                         new ErrorResponse(String.format("Backup not found for id: %s", unknownBackupId))));
+    }
+
+    @Test
+    public void exportBackupWithLabel_returnsBytes() throws Exception {
+        final String backupId = "7799898c-a54a-4aac-a576-0a4b0df559d7";
+        final String label = "XYZ-123-LABEL";
+        final byte[] bytesFromEncodedString = "encodedString".getBytes();
+        when(service.exportBackup(backupId, label)).thenReturn(bytesFromEncodedString);
+
+        final MvcResult result = mockMvc.perform(get(String.format("/v0.2/exports/%s/%s", backupId, label)))
+                .andExpect(status().isOk())
+                .andReturn();
+        assertThat(result.getResponse().getContentAsString())
+                .isEqualTo("encodedString");
     }
 }

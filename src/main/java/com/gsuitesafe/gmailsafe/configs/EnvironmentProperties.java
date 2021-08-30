@@ -11,9 +11,11 @@ public class EnvironmentProperties {
     @Autowired
     private Environment env;
 
+    private final String ENABLE_GMAIL_API_PROPERTY = "enable-gmail-api";
+
     @Bean
     public boolean isGmailAPiEnabled() {
-        return Boolean.parseBoolean(env.getProperty("enable-gmail-api"));
+        return Boolean.parseBoolean(env.getProperty(ENABLE_GMAIL_API_PROPERTY));
     }
 
 }
